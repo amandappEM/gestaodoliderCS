@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0f1226">
+<title>Será? · Pausa antes de comprar</title>
+<style>
+  :root{
+    --bg:#0f1226; --bg2:#171a37; --card:#1d2147;
+    --ink:#f5f6ff; --muted:#a6a9cf;
+    --green:#34d399; --red:#fb7185; --amber:#fbbf24;
+    --brand:#8b7bff; --brand2:#5ee2c6;
+    --shadow:0 24px 60px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(1200px 700px at 50% -10%,#272a55 0%,var(--bg) 55%);
+    color:var(--ink); min-height:100dvh;
+    display:flex; align-items:flex-start; justify-content:center;
+    padding:24px 18px 40px;
+  }
+  .app{width:100%;max-width:440px}
+  header{text-align:center;margin:8px 0 22px}
+  .logo{
+    font-size:34px;font-weight:800;letter-spacing:-.5px;
+    background:linear-gradient(90deg,var(--brand),var(--brand2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .logo .q{font-weight:800}
+  .tag{color:var(--muted);font-size:14px;margin-top:4px}
+  .card{
+    background:linear-gradient(180deg,var(--card),#191d3d);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:24px;padding:24px;box-shadow:var(--shadow);
+    animation:rise .5s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+  label{display:block;font-size:13px;color:var(--muted);margin:0 0 8px 2px;font-weight:600}
+  input{
+    width:100%;background:#11142e;border:1px solid rgba(255,255,255,.09);
+    color:var(--ink);font-size:17px;padding:15px 16px;border-radius:14px;outline:none;
+    transition:border .2s,box-shadow .2s;
+  }
+  input:focus{border-color:var(--brand);box-shadow:0 0 0 4px rgba(139,123,255,.18)}
+  .row{margin-bottom:16px}
+  .step-count{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--brand2);font-weight:700;margin-bottom:14px}
+  .qtext{font-size:23px;font-weight:700;line-height:1.25;margin-bottom:6px}
+  .qhint{font-size:14px;color:var(--muted);line-height:1.45;margin-bottom:22px}
+  .opts{display:grid;gap:12px}
+  .opt{
+    display:flex;align-items:center;gap:14px;
+    background:#11142e;border:1px solid rgba(255,255,255,.08);
+    padding:16px 18px;border-radius:16px;font-size:16px;font-weight:600;
+    cursor:pointer;transition:transform .12s,border .2s,background .2s;
+  }
+  .opt:active{transform:scale(.97)}
+  .opt .emoji{font-size:22px}
+  .opt[data-w="yes"]:hover{border-color:var(--green)}
+  .opt[data-w="mid"]:hover{border-color:var(--amber)}
+  .opt[data-w="no"]:hover{border-color:var(--red)}
+  .btn{
+    width:100%;border:none;border-radius:16px;padding:17px;font-size:17px;font-weight:800;
+    cursor:pointer;color:#0f1226;background:linear-gradient(90deg,var(--brand),var(--brand2));
+    transition:transform .12s,filter .2s;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn:disabled{filter:grayscale(.6) brightness(.7);cursor:not-allowed}
+  .ghost{background:transparent;color:var(--muted);font-weight:600;border:1px solid rgba(255,255,255,.12)}
+  .progress{display:flex;gap:7px;margin:20px 0 4px}
+  .progress span{height:6px;flex:1;border-radius:6px;background:rgba(255,255,255,.12);transition:background .3s}
+  .progress span.on{background:linear-gradient(90deg,var(--brand),var(--brand2))}
+  .summary{text-align:center}
+  .verdict-emoji{font-size:64px;animation:pop .6s cubic-bezier(.2,1.4,.4,1) both}
+  @keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+  .verdict-title{font-size:27px;font-weight:800;margin:10px 0 6px}
+  .verdict-sub{color:var(--muted);font-size:15px;line-height:1.5;margin-bottom:18px}
+  .meter{height:14px;background:#11142e;border-radius:10px;overflow:hidden;margin:6px 0 18px}
+  .meter > i{display:block;height:100%;width:0;border-radius:10px;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+  .breakdown{display:grid;gap:10px;margin:18px 0;text-align:left}
+  .brow{display:flex;align-items:center;gap:12px;background:#11142e;padding:13px 15px;border-radius:14px;font-size:14px}
+  .brow .dot{width:10px;height:10px;border-radius:50%;flex:none}
+  .brow b{margin-left:auto;font-weight:700}
+  .save-note{font-size:13px;color:var(--muted);margin-top:4px}
+  .hidden{display:none}
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:18px;opacity:.8}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">Será<span class="q">?</span></div>
+    <div class="tag">3 perguntas antes de gastar</div>
+  </header>
+
+  <!-- STEP 0: o que quer comprar -->
+  <section class="card" id="screen-start">
+    <div class="step-count">Pausa de 30 segundos</div>
+    <div class="qtext">O que você está pensando em comprar?</div>
+    <div class="qhint">Antes de passar o cartão, responde 3 perguntinhas. Sem julgamento — só consciência. 💚</div>
+    <div class="row">
+      <label for="item">Item</label>
+      <input id="item" type="text" placeholder="Ex.: Fone novo, tênis, curso..." autocomplete="off">
+    </div>
+    <div class="row">
+      <label for="price">Quanto custa? (R$)</label>
+      <input id="price" type="number" inputmode="decimal" placeholder="Ex.: 299">
+    </div>
+    <button class="btn" id="startBtn">Começar a pausa ✨</button>
+  </section>
+
+  <!-- STEP 1-3: perguntas -->
+  <section class="card hidden" id="screen-q">
+    <div class="step-count" id="qCount">Pergunta 1 de 3</div>
+    <div class="qtext" id="qText"></div>
+    <div class="qhint" id="qHint"></div>
+    <div class="opts" id="qOpts"></div>
+    <div class="progress" id="prog"><span></span><span></span><span></span></div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="card summary hidden" id="screen-result">
+    <div class="verdict-emoji" id="vEmoji"></div>
+    <div class="verdict-title" id="vTitle"></div>
+    <div class="verdict-sub" id="vSub"></div>
+    <div class="meter"><i id="vMeter"></i></div>
+    <div class="breakdown" id="vBreak"></div>
+    <div class="save-note hidden" id="saveNote"></div>
+    <div style="display:grid;gap:10px;margin-top:8px">
+      <button class="btn" id="againBtn">Fazer outra pausa 🔁</button>
+    </div>
+  </section>
+
+  <footer>Feito na demo mágica · ideia do grupo 💜</footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  { key:"need",
+    text:"Eu preciso disso?",
+    hint:"Resolve um problema real do seu dia a dia — ou é vontade do momento?",
+    opts:[
+      {label:"Preciso de verdade", emoji:"✅", w:"yes"},
+      {label:"Mais ou menos",      emoji:"🤔", w:"mid"},
+      {label:"É só vontade agora",  emoji:"😅", w:"no"}
+    ]},
+  { key:"afford",
+    text:"Eu posso pagar isso?",
+    hint:"Cabe no orçamento sem apertar as contas nem virar dívida?",
+    opts:[
+      {label:"Cabe tranquilo",        emoji:"✅", w:"yes"},
+      {label:"Cabe, mas aperta",      emoji:"🤔", w:"mid"},
+      {label:"Vou me endividar",      emoji:"🚩", w:"no"}
+    ]},
+  { key:"sub",
+    text:"Tenho algo que substitua isso?",
+    hint:"Já tem em casa algo parecido que resolve por enquanto?",
+    opts:[
+      {label:"Não tenho nada parecido", emoji:"✅", w:"yes"},
+      {label:"Tenho algo improvisado",  emoji:"🤔", w:"mid"},
+      {label:"Já tenho algo que serve", emoji:"♻️", w:"no"}
+    ]}
+];
+const SCORE = { yes:2, mid:1, no:0 };
+
+let item="", price=0, idx=0, answers=[];
+
+const $ = id => document.getElementById(id);
+const show = id => ["screen-start","screen-q","screen-result"]
+  .forEach(s => $(s).classList.toggle("hidden", s!==id));
+
+$("startBtn").onclick = () => {
+  item  = $("item").value.trim() || "essa compra";
+  price = parseFloat($("price").value) || 0;
+  idx=0; answers=[];
+  show("screen-q"); renderQ();
+};
+
+function renderQ(){
+  const q = QUESTIONS[idx];
+  $("qCount").textContent = `Pergunta ${idx+1} de 3`;
+  $("qText").textContent  = q.text;
+  $("qHint").textContent  = q.hint;
+  const wrap = $("qOpts"); wrap.innerHTML="";
+  q.opts.forEach(o=>{
+    const b=document.createElement("div");
+    b.className="opt"; b.dataset.w=o.w;
+    b.innerHTML=`<span class="emoji">${o.emoji}</span><span>${o.label}</span>`;
+    b.onclick=()=>pick(o.w);
+    wrap.appendChild(b);
+  });
+  [...$("prog").children].forEach((s,i)=>s.classList.toggle("on", i<=idx-1));
+  $("screen-q").style.animation="none"; void $("screen-q").offsetWidth;
+  $("screen-q").style.animation="rise .35s ease both";
+}
+
+function pick(w){
+  answers[idx]=w;
+  if(idx<QUESTIONS.length-1){ idx++; renderQ(); }
+  else result();
+}
+
+function result(){
+  const total = answers.reduce((a,w)=>a+SCORE[w],0); // 0..6
+  const pct = Math.round(total/6*100);
+  let emoji,title,sub,color;
+  if(total>=5){
+    emoji="🟢"; color="var(--green)";
+    title="Vai fundo, compra consciente!";
+    sub=`Você precisa, cabe no bolso e não tem substituto. <b>${esc(item)}</b> passou nas 3 perguntas. 🎉`;
+  } else if(total>=3){
+    emoji="🟡"; color="var(--amber)";
+    title="Espera 24 horas…";
+    sub=`<b>${esc(item)}</b> ficou na dúvida. Dorme com a ideia: se amanhã ainda fizer sentido, compra com calma.`;
+  } else {
+    emoji="🔴"; color="var(--red)";
+    title="Talvez não valha a pena";
+    sub=`As respostas indicam impulso. Que tal usar o que já tem e guardar esse dinheiro? 💪`;
+  }
+  $("vEmoji").textContent=emoji;
+  $("vTitle").textContent=title;
+  $("vSub").innerHTML=sub;
+  $("vMeter").style.background=`linear-gradient(90deg,${color},var(--brand2))`;
+
+  const labels={need:"Preciso disso?",afford:"Posso pagar?",sub:"Tenho substituto?"};
+  const wlabel={yes:["Sim",var0("green")],mid:["Mais ou menos",var0("amber")],no:["Não",var0("red")]};
+  $("vBreak").innerHTML = QUESTIONS.map((q,i)=>{
+    const [t,c]=wlabel[answers[i]];
+    return `<div class="brow"><span class="dot" style="background:${c}"></span>${labels[q.key]}<b>${t}</b></div>`;
+  }).join("");
+
+  const note=$("saveNote");
+  if(total<3 && price>0){
+    note.classList.remove("hidden");
+    note.innerHTML=`💰 Se não comprar agora, são <b>R$ ${price.toLocaleString('pt-BR')}</b> que ficam com você — ou rendendo na poupança.`;
+  } else note.classList.add("hidden");
+
+  show("screen-result");
+  setTimeout(()=>$("vMeter").style.width=pct+"%",120);
+}
+
+function var0(n){return getComputedStyle(document.documentElement).getPropertyValue('--'+n).trim();}
+function esc(s){return s.replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));}
+
+$("againBtn").onclick = () => {
+  $("item").value=""; $("price").value="";
+  $("vMeter").style.width="0";
+  show("screen-start"); $("item").focus();
+};
+</script>
+</body>
+</html>
