@@ -1,40 +1,12 @@
-name: Deploy to GitHub Pages
-
+# GitHub Pages is served directly from this branch.
+# Configure once: repo Settings > Pages > Build and deployment >
+#   Source: "Deploy from a branch" > Branch: claude/eloquent-bell-h7s0wc / (root)
+# This workflow is intentionally manual-only and does nothing on push.
+name: noop
 on:
-  push:
-    branches:
-      - claude/eloquent-bell-h7s0wc
   workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
-
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  noop:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - run: echo "Pages is served from the branch root. See Settings > Pages."
